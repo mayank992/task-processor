@@ -54,31 +54,22 @@ export class TaskProcessor {
     }
   }
 
-  enqueueTask(task) {
-    if (task.type === TASK_TYPES.HIGH_PRIORITY) {
-      this.taskQueueHigh.push(task);
-    } else {
-      this.taskQueueNormal.push(task);
-    }
-
-    // trigger processing when a new task is enqueued
-    this.processTasks();
-  }
-
-  enqueueRunnableTasks() {
-    if (this.pendingTasks.length === 0) {
-      this.processTasks();
-      return;
-    }
-
+  enqueueRunnableTasksAndProcess() {
     // enqueue tasks that might now be ready
     this.pendingTasks = this.pendingTasks.reduce((acc, task) => {
-      if (this.canRun(task)) {
-        this.enqueueTask(task);
-        return acc;
+      if (!this.canRun(task)) {
+        return [...acc, task];
       }
-      return [...acc, task];
+
+      if (task.type === TASK_TYPES.HIGH_PRIORITY) {
+        this.taskQueueHigh.push(task);
+      } else {
+        this.taskQueueNormal.push(task);
+      }
+      return acc;
     }, []);
+
+    this.processTasks();
   }
 
   async executeTask(task) {
@@ -92,16 +83,16 @@ export class TaskProcessor {
     this.onUpdateTaskStatus(task.id, TASK_STATUS.COMPLETED);
 
     // enqueue runnable tasks and process
-    this.enqueueRunnableTasks();
+    this.enqueueRunnableTasksAndProcess();
   }
 
   addTask(task) {
     this.pendingTasks.push(task);
-    this.enqueueRunnableTasks();
+    this.enqueueRunnableTasksAndProcess();
   }
 
   updateMaxRunningTasks(maxRunningTasks) {
     this.maxRunningTasks = maxRunningTasks;
-    this.enqueueRunnableTasks();
+    this.enqueueRunnableTasksAndProcess();
   }
 }
