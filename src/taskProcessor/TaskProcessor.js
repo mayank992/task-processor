@@ -26,7 +26,6 @@ export class TaskProcessor {
     await task.execute();
 
     this.runningTasks--;
-    this.completedTasks.add(task.id);
     this.onUpdateTaskStatus(task.id, TASK_STATUS.COMPLETED);
   }
 
