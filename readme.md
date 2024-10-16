@@ -1,6 +1,6 @@
 ### Problem Statement: Task Processor
 
-**Objective**: Implement a Task Processor that manages the execution of normal and high-priority tasks, considering task dependencies and allowing dynamic adjustment of the upper limit on the number of tasks in the RUNNING state.
+**Objective**: Implement a Task Processor that manages the execution of tasks, considering task type, task dependencies and allowing dynamic adjustment of the upper limit on the number of tasks in the RUNNING state.
 
 #### Task Types:
 
@@ -32,9 +32,10 @@
    - `updateMaxRunningTasks(maxRunningTasks)`: Updates the upper limit for running tasks.
 
 2. Ensure that when the upper limit is adjusted:
-
-- If it is increased, the processor should try to initiate pending tasks.
-- If it is decreased, the processor should halt the addition of new tasks until the number of running tasks is below the `maxRunningTasks` limit, allowing them to finish gracefully."
+   - If it is increased, the processor should try to initiate pending tasks.
+   - If it is decreased, the processor should halt the addition of new tasks until the number of running tasks is below the `maxRunningTasks` limit, allowing them to finish gracefully."
+  
+3. Tasks should get executed (if possible as per constaints) as soon as they are added to Task Processor.
 
 ## Submission Instructions
 
